@@ -1,0 +1,33 @@
+{
+  "short_name": "AvaSystem",
+  "name": "AvaSystem - Logística",
+  "description": "Sistema de gestão logística para manutenções e CT-e",
+  "icons": [
+    {
+      "src": "logoPWA.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "logoPWA.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "logoPWA.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "categories": ["business", "productivity"],
+  "lang": "pt-BR",
+  "scope": "/"
+}
