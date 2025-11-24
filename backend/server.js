@@ -31,17 +31,16 @@ const PORT = process.env.PORT || 3002;
 app.use(helmet());
 
 // CORS
-app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:3000', 
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://192.168.2.81:3000'
-  ],
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? [process.env.FRONTEND_URL]
+    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://192.168.2.81:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Compressão de respostas
 app.use(compression());
@@ -108,10 +107,14 @@ const startServer = async () => {
     await db.authenticate();
     console.log('✅ Conexão com MySQL estabelecida com sucesso');
 
-    // Sincronizar models (apenas em desenvolvimento)
+    // Sincronizar models
     if (process.env.NODE_ENV === 'development') {
       await db.sync({ alter: false });
       console.log('✅ Models sincronizados com o banco de dados');
+    } else {
+      // Em produção, apenas verificar se as tabelas existem
+      await db.sync({ alter: false });
+      console.log('✅ Banco de dados verificado');
     }
 
     // Criar pasta de uploads se não existir
@@ -123,13 +126,13 @@ const startServer = async () => {
     }
 
     // Iniciar servidor
-    app.listen(PORT, '0.0.0.0', () => {
+    const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '0.0.0.0';
+    app.listen(PORT, host, () => {
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
       console.log(`📍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🌐 URL Local: http://localhost:${PORT}`);
-      console.log(`🌐 URL Rede: http://192.168.2.81:${PORT}`);
-      console.log(`🏥 Health Check: http://192.168.2.81:${PORT}/health`);
+      console.log(`🌐 URL: http://localhost:${PORT}`);
+      console.log(`🏥 Health: http://localhost:${PORT}/health`);
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     });
 

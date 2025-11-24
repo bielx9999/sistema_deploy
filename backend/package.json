@@ -6,9 +6,14 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
+    "build": "echo 'Backend build complete'",
     "init-rds": "node init-rds.js",
     "test-connection": "node -e \"require('dotenv').config(); require('./config/database').testConnection().then(() => process.exit(0)).catch(() => process.exit(1))\"",
     "setup-email": "node setup-email.js"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
