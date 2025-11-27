@@ -9,7 +9,8 @@
     "build": "echo 'Backend build complete'",
     "init-rds": "node init-rds.js",
     "test-connection": "node -e \"require('dotenv').config(); require('./config/database').testConnection().then(() => process.exit(0)).catch(() => process.exit(1))\"",
-    "setup-email": "node setup-email.js"
+    "setup-email": "node setup-email.js",
+    "railway-build": "npm install --only=production"
   },
   "engines": {
     "node": ">=18.0.0",
