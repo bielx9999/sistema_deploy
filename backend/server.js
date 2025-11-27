@@ -27,20 +27,24 @@ const PORT = process.env.PORT || 3002;
 // MIDDLEWARES GLOBAIS
 // ============================================
 
-// Segurança
-app.use(helmet());
+// Segurança - Configurado para mobile
+app.use(helmet({
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: false
+}));
 
 // CORS
-const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL]
-    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://192.168.2.81:3000'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
+// CORS para mobile
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 // Compressão de respostas
 app.use(compression());
@@ -131,8 +135,9 @@ const startServer = async () => {
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
       console.log(`📍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🌐 URL: http://localhost:${PORT}`);
-      console.log(`🏥 Health: http://localhost:${PORT}/health`);
+      console.log(`🌐 URL Local: http://localhost:${PORT}`);
+      console.log(`🌐 URL Rede: http://192.168.2.81:${PORT}`);
+      console.log(`🏥 Health: http://192.168.2.81:${PORT}/health`);
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     });
 

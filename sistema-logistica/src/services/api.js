@@ -2,11 +2,13 @@ import axios from 'axios';
 
 // Configuração base da API
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
-    timeout: 30000,
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3002/api',
+    timeout: 60000,
     headers: {
-        'Content-Type': 'application/json'
-    }
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    },
+    withCredentials: false
 });
 
 // Interceptor para adicionar token de autenticação
@@ -36,7 +38,8 @@ api.interceptors.response.use(
                 window.location.href = '/';
             }
         } else if (error.request) {
-            console.error('Erro na requisição:', error.request);
+            console.error('Erro na requisição - Sem resposta do servidor');
+            console.error('Verifique se o backend está rodando em:', process.env.REACT_APP_API_URL);
         } else {
             console.error('Erro:', error.message);
         }
@@ -263,7 +266,10 @@ export const downloadFile = async (id, filename) => {
 };
 
 // Função para verificar saúde da API
-export const checkHealth = () => api.get('/health', { baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000' });
+export const checkHealth = () => {
+    const baseURL = (process.env.REACT_APP_API_URL || 'http://localhost:3002/api').replace('/api', '');
+    return axios.get(`${baseURL}/health`, { timeout: 10000 });
+};
 
 // ===================== MENSAGENS =====================
 export const mensagensAPI = {
